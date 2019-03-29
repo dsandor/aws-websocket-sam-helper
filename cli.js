@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// TODO: Expose options with command line arguments to the cli.
+
 const SamHelper = require('./SamHelper');
 
 async function doWork() {
