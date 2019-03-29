@@ -2,6 +2,8 @@
 
 This module will allow you to use json files to decorate your serverless code. Those json files will be used to generate out a valid SAM Template.
 
+tldr; Check out the simple example here [https://github.com/dsandor/ws-sam-helper-example]()
+
 Place your `function.json` description file next to your code so it makes it simple to add a new function to your API Gateway and no more cutting and pasting large chunks of YAML in your sam template.
 
 Here is an example of a Web Socket API Gateway route handler. 
