@@ -1,0 +1,20 @@
+  {{functionName}}:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: {{safeVal handler 'index.handler'}}
+      Timeout: {{safeVal timeout 30}}
+      Runtime: {{safeVal runtime 'nodejs8.10'}}
+      CodeUri: {{safeVal codeUri './'}}
+    {{#if policies}}
+      Policies:
+    {{#each policies}}
+        - {{this}}
+    {{/each}}
+    {{/if}}
+    {{#if environmentVariables}}
+      Environment:
+        Variables:
+    {{#each environmentVariables}}
+          {{name}}: {{value}}
+    {{/each}}
+    {{/if}}

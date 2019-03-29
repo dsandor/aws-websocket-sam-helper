@@ -1,0 +1,36 @@
+  # Route
+  #===========================
+  #  Key: {{routeKey}} route handler
+  #  Handler: {{functionName}}
+  #===========================
+  {{functionName}}Route:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref {{apiId}}
+      RouteKey: {{routeKey}}
+      AuthorizationType: NONE
+      OperationName: {{functionName}}Route
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref {{functionName}}Integ
+
+  {{functionName}}Integ:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref {{apiId}}
+      Description: {{functionName}} Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+          arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ {{functionName}}.Arn }/invocations
+
+  {{functionName}}Permission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - {{apiId}}
+      - {{functionName}}
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref {{functionName}}
+      Principal: apigateway.amazonaws.com

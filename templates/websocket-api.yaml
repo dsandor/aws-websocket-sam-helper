@@ -1,0 +1,33 @@
+# WebSocket Infrastructure
+  # apiId, apiName, routeSelectionExpression, stageName, stageDescription, [FunctionNames]
+  #===========================
+  # API ($request.body.action)
+  #===========================
+  {{apiId}}:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: {{apiName}}
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "{{routeSelectionExpression}}"
+
+{{{routes}}}
+
+  #===========================
+  # Deployment
+  #===========================
+  Deployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+      - {{apiId}}
+{{#functionNameList functions}}{{functionName}}{{/functionNameList}}
+{{#each functions}}      - {{functionName}}Route{{/each}}
+    Properties:
+      ApiId: !Ref {{apiId}}
+
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: {{stageName}}
+      Description: {{stageDescription}}
+      DeploymentId: !Ref Deployment
+      ApiId: !Ref {{apiId}}
