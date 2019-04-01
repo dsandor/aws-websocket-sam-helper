@@ -18,9 +18,10 @@ Handlebars.registerHelper('safeVal', function (value, safeValue) {
 const DEFAULT_FUNCTION_DEF_FILENAME = 'function.json';
 
 class SamHelper {
-  constructor(apiDefinitions, functionDefinitions) {
+  constructor(apiDefinitions, functionDefinitions, options = {}) {
     this.apiDefinitions = apiDefinitions;
     this.functionDefinitions = functionDefinitions;
+    this.options = options;
   }
 
   async loadTemplates(realtivePathToTemplates = 'templates') {
@@ -47,7 +48,7 @@ class SamHelper {
     const files = [];
 
     for(let dir of dirItems) {
-      const dirPath = path.join(startingPath, dir);
+      const dirPath = path.join(startingPath, dir.name ? dir.name : dir);
       const stat = await fs.lstat(dirPath);
       if (stat.isDirectory()) {
         dirs.push(dirPath)
@@ -103,7 +104,7 @@ class SamHelper {
    * @returns {Promise<void>} - Writes a file.
    */
   async render(apis = this.apiDefinitions, functions = this.functionDefinitions) {
-    const templates = await this.loadTemplates();
+    const templates = await this.loadTemplates(this.options.templatePath);
 
     const apiDescriptions = [];
     for(let apiDescription of apis) {
@@ -114,7 +115,9 @@ class SamHelper {
 
     const renderedSamTemplate = this.renderSamTemplate(apiDescriptions, functions, templates);
 
-    await fs.writeFile('template.yaml', renderedSamTemplate);
+    if (this.options.writeFile) {
+      await fs.writeFile(this.options.outputFilename, renderedSamTemplate);
+    }
 
     return renderedSamTemplate;
   }

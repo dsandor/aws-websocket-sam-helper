@@ -179,4 +179,39 @@ For example, if you have a sub folder in your project named `user` and you have 
 
 
 
-  
+## Command Line Arguments
+
+The way you use `sam-helper` is customizable. Executing sam-helper with no arguments uses a sane set of default values which should cover most situations. However, for the more advanced users you can also do things like use your own handlebars formatted YaML snippets to compose your `template.yaml` or output the rendered yaml to a file of your choosing.
+
+| argument | description |
+|---|---|
+|-V|Version. Display the version of the `sam-helper`.|
+|-t or --template-path|The directory containing your custom template files.|
+|--no-write-file|Only output the rendered template to the console.|
+|--output-filename|The name of the file to write the rendered template to. Default value is **template.yaml**|
+|--starting-path|The starting path to search for *function.json files in your project. Default value is `.` (your project root)|
+|--api-definition-file|A file that contains your api definitions. If not specified, your package.json is inspected for an `api` property and tht is used.|
+
+
+#### Examples
+
+**Use your own template files:**
+
+```sh
+sam-helper --template-path ./my-templates
+```
+
+**Only write output to console:**
+
+```sh
+sam-helper --no-write-file
+```
+
+**Start looking for source code in a sub directory on your project:**
+
+```sh
+sam-helper --starting-path ./src/lambdas
+```
+
+_NOTE: by default the cli will search all folders in your project root and every sub directory included in them. Skipping `node_modules`_
+
